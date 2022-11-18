@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Blinker:wght@400;700&family=Montserrat:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: "Montserrat", sans-serif;
+  color-scheme: dark;
+}
+
+.font-blinker{
+  font-family: "Blinker", sans-serif;
+}
+
+/* @media (prefers-color-scheme: dark) {
+} */
