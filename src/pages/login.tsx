@@ -1,6 +1,13 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import { useForm } from 'react-hook-form';
 
 export default function Login() {
+  const { register, handleSubmit, } = useForm()
+
+  const onSubmit = (data: any) => console.log(data)
+
   return (
     <div className="flex justify-end">
       <div className="bg-ng-white h-screen w-2/3">
@@ -12,16 +19,17 @@ export default function Login() {
           <div className="text-sm m-5">
             <p className="text-ng-gray-400">
               Not a member?
-              <a className="text-ng-green" href="/createAccount">
+              <Link className="text-ng-green" href="/createAccount">
                 Create your account
-              </a>
+              </Link>
             </p>
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <form className="">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
+              {...register("username", { required: true }) }
                 className="bg-ng-white"
                 name="username"
                 type="text"
@@ -46,6 +54,7 @@ export default function Login() {
             </div>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
+              {...register("password", { required: true }) }
                 className="bg-ng-white rounded"
                 name="password"
                 type="password"

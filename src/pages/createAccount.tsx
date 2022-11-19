@@ -1,11 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { useForm } from 'react-hook-form'
 
 export default function CreateAccount() {
-  const { register, handleSubmit, formState: {erros}} = useForm()
+  const { register, handleSubmit, watch, formState:{errors}} = useForm({mode:'onTouched'})
 
-  const onSubmit = data => console.log(data)
+  const onSubmit = (data: any) => {
+    alert("Button clicked")
+  }
+  const password = watch('password')
 
   return (
     <div className="flex justify-end">
@@ -18,24 +22,25 @@ export default function CreateAccount() {
           <div className="text-sm m-5">
             <p className="text-ng-gray-400">
               Already a member?
-              <a className="text-ng-pink" href="#">
+              <Link className="text-ng-pink" href="/login">
                 Log in
-              </a>
+              </Link>
             </p>
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form method="POST" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
-              {...register("username")}
-                className="bg-ng-white"
+              {...register("username", { required: true }) }
+                className="border-transparent focus:border-none focus:outline-none bg-ng-white"
                 name="username"
                 id="username"
-                required
                 type="text"
+                required
                 placeholder="Username"
-              />
+                minLength={3}
+              />{errors.username && errors.username.type === "required"}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -53,15 +58,15 @@ export default function CreateAccount() {
             </div>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
-              {...register("email")}
-                className="bg-ng-white"
+              {...register("email", { required: true })}
+                className="border-transparent focus:border-none focus:outline-none bg-ng-white"
                 name="email"
                 type="email"
                 id="email"
                 required
                 autoComplete="email"
                 placeholder="Email"
-              />
+              />{errors.email && errors.email.type === "required"}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -78,14 +83,22 @@ export default function CreateAccount() {
             </div>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
-              {...register("password")}
-                className="bg-ng-white rounded"
+              {...register("password", { required: true, pattern:{
+                value: /(?=.*?[A-Z])(?=.*?[0-9])/,
+                message:'Password must have one uppercase letter and at least one numerical character'
+            },
+            minLength:{
+                value:8,
+                message:'Minimum Required length is 8'
+            }, })}
+                className="bg-ng-white rounded border-transparent focus:border-none focus:outline-none"
                 name="password"
                 type="password"
                 id="password"
                 required
                 placeholder="Password"
               />
+              
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -100,12 +113,13 @@ export default function CreateAccount() {
                   d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
                 />
               </svg>
-            </div>
+            </div>            
             <button type="submit"
             className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-pink rounded-full my-2 p-3">
               Create your account
             </button>
           </form>
+          {errors.password && <span className="text-sm">{errors.password.message}</span>}
         </div>
       </div>
     </div>
