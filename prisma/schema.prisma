@@ -14,35 +14,37 @@ datasource db {
 }
 
 model Users {
-  userId      String  @id @default(cuid())
-  username    String  @unique
-  email       String  @unique
-  password    String
-  userAccount String
-  account     Account @relation(fields: [userAccount], references: [accountId])
+  userId   String    @id @default(cuid())
+  username String    @unique
+  email    String    @unique
+  password String
+  
+  account Account? @relation(fields: [accountId], references: [id])
+  accountId String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Account {
-  accountId String @id @default(cuid())
-  balance   Int
+  id   String  @id @default(cuid())
+  balance     Decimal @default(100)
+
+    userId Users[]
 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  Users         Users[]
   debitAccount  Transactions? @relation("DebitAccount")
   creditAccount Transactions? @relation("CreditAccount")
 }
 
 model Transactions {
   transactionId   String  @id @default(cuid())
-  value           Int
+  value           Decimal
   debit           String  @unique
   credit          String  @unique
-  debitedAccount  Account @relation("DebitAccount", fields: [debit], references: [accountId])
-  creditedAccount Account @relation("CreditAccount", fields: [credit], references: [accountId])
+  debitedAccount  Account @relation("DebitAccount", fields: [debit], references: [id])
+  creditedAccount Account @relation("CreditAccount", fields: [credit], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

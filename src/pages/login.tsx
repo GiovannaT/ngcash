@@ -30,7 +30,7 @@ export default function Login() {
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
               {...register("username", { required: true }) }
-                className="bg-ng-white"
+                className="bg-ng-white focus:border-none focus:outline-none"
                 name="username"
                 type="text"
                 id="username"
@@ -55,7 +55,7 @@ export default function Login() {
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
               {...register("password", { required: true }) }
-                className="bg-ng-white rounded"
+                className="bg-ng-white focus:border-none focus:outline-none"
                 name="password"
                 type="password"
                 id="password"

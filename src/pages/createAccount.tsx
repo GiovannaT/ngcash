@@ -4,12 +4,30 @@ import Link from "next/link";
 import { useForm } from 'react-hook-form'
 
 export default function CreateAccount() {
-  const { register, handleSubmit, watch, formState:{errors}} = useForm({mode:'onTouched'})
+  const { register, handleSubmit, formState:{errors}} = useForm({mode:'onTouched'})
 
   const onSubmit = (data: any) => {
-    alert("Button clicked")
+    try {
+      createUser(data);
+      console.log('user criado')
+    } catch (error) {
+      console.log(error)
+    }
   }
-  const password = watch('password')
+
+  async function createUser( data: FormData) {
+    try {
+      fetch('http://localhost:3000/api/post/create', {
+        body: JSON.stringify(data),
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        method: 'POST'
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="flex justify-end">
