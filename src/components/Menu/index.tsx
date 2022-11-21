@@ -82,7 +82,7 @@ export const Menu = () => (
           />
         </svg>
 
-        <a href="/login">Logout</a>
+        <Link href="/login">Logout</Link>
       </div>
   </div>
 );
