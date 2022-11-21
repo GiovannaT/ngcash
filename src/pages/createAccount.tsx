@@ -7,9 +7,10 @@ export default function CreateAccount() {
   const { register, handleSubmit, formState:{errors}} = useForm({mode:'onTouched'})
 
   const onSubmit = (data: any) => {
+    data.preventDefault();
+    
     try {
       createUser(data);
-      console.log('user criado')
     } catch (error) {
       console.log(error)
     }
@@ -18,11 +19,11 @@ export default function CreateAccount() {
   async function createUser( data: FormData) {
     try {
       fetch('http://localhost:3000/api/post/create', {
+        method: 'POST',
         body: JSON.stringify(data),
         headers:{
           'Content-Type': 'application/json'
         },
-        method: 'POST'
       })
     } catch (error) {
       console.log(error);
@@ -107,7 +108,7 @@ export default function CreateAccount() {
             },
             minLength:{
                 value:8,
-                message:'Minimum Required length is 8'
+                message:'Password minimum required length is 8 characters'
             }, })}
                 className="bg-ng-white rounded border-transparent focus:border-none focus:outline-none"
                 name="password"
