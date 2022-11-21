@@ -1,10 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 
 import { useForm } from 'react-hook-form';
+import { AuthContext } from "../contexts/Auth/AuthContext";
 
 export default function Login() {
-  const { register, handleSubmit, } = useForm()
+  const {signIn} = useContext(AuthContext);
+
+  const { register, handleSubmit, formState:{errors}} = useForm();
+
+  async function handleSignin(data: any){
+    await signIn(data.username, data.password);
+  }
 
   const onSubmit = (data: any) => console.log(data)
 
@@ -26,7 +34,7 @@ export default function Login() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(handleSignin)}>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
               {...register("username", { required: true }) }
@@ -78,7 +86,7 @@ export default function Login() {
               </svg>
             </div>
             <button className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-green rounded-full my-2 p-3">
-              Login
+              <Link href='/'>Login</Link>
             </button>
           </form>
         </div>
