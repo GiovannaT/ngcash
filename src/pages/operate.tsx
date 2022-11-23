@@ -2,7 +2,6 @@ import { Balance } from "../components/Balance";
 import { Menu } from "../components/Menu";
 
 import { useForm } from "react-hook-form";
-import { RequireAuth } from "../contexts/Auth/RequireAuth";
 
 export default function Operate() {
   const { register, handleSubmit } = useForm();
@@ -11,7 +10,6 @@ export default function Operate() {
 
   return (
     <>
-      <RequireAuth>
         <div className="flex text-ng-white">
           <Menu></Menu>
           <div className="py-10 px-20 flex flex-col w-screen">
@@ -73,7 +71,6 @@ export default function Operate() {
             </div>
           </div>
         </div>
-      </RequireAuth>
     </>
   );
 }

@@ -1,21 +1,26 @@
-import { useContext } from "react";
 import { Menu } from "../components/Menu";
 import { Balance } from "../components/Balance";
-import { RequireAuth } from "../contexts/Auth/RequireAuth";
-import { AuthContext } from "../contexts/Auth/AuthContext";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-  const auth = useContext(AuthContext);
+  const {data: session, status} = useSession()
+  console.log(session);
 
-  return (
-    <RequireAuth>
+
+
+  if(status === "loading") return <p>Loading</p>
+  if(status === "unauthenticated") return <p>Acess Denied</p>
+  if(typeof window === "undefined") return null
+
+  if(session){
+      return (
       <div className="flex text-ng-white">
       <Menu></Menu>
       <div className="py-10 px-20 w-screen">
-        <h1 className="font-blinker font-bold text-2xl mb-5">Welcome, {auth.user?.username}</h1>
+        <h1 className="font-blinker font-bold text-2xl mb-5">{session.user?.name}</h1>
         <Balance></Balance>
       </div>
     </div>
-    </RequireAuth>
   );
+  }
 }

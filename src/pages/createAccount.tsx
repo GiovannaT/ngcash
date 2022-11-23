@@ -7,8 +7,6 @@ export default function CreateAccount() {
   const { register, handleSubmit, formState:{errors}} = useForm({mode:'onTouched'})
 
   const onSubmit = (data: any) => {
-    data.preventDefault();
-    
     try {
       createUser(data);
     } catch (error) {

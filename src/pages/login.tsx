@@ -1,40 +1,17 @@
-import Link from "next/link";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { ChangeEvent, useContext, useState } from "react";
-
-import { AuthContext } from "../contexts/Auth/AuthContext";
-import Router from "next/router";
+import Image from "next/image";
+import Link from "next/link";
+import { GetServerSideProps } from "next";
+import { getSession, signIn } from 'next-auth/react';
 
 export default function Login() {
-  const auth = useContext(AuthContext);
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleUsernameInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
 
   const {
     register,
     handleSubmit,
   } = useForm();
 
-  async function handleSignin(data: any) {
-    if (username && password) {
-      const isLogged = await auth.signIn(username, password);
-      if (isLogged) {
-        Router.push('/')
-      } else {
-        alert('Problems happened trying to login. Try again later.')
-      }
-    }
-  }
+  const handleSignIn = (data: any) => console.log(data);
 
   return (
     <div className="flex justify-end">
@@ -54,11 +31,11 @@ export default function Login() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <form onSubmit={handleSubmit(handleSignin)}>
+          <form onSubmit={handleSubmit(handleSignIn)}>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
                 {...register("username", { required: true })}
-                onChange={handleUsernameInput}
+
                 className="bg-ng-white focus:border-none focus:outline-none"
                 name="username"
                 type="text"
@@ -84,7 +61,6 @@ export default function Login() {
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
                 {...register("password", { required: true })}
-                onChange={handlePasswordInput}
                 className="bg-ng-white focus:border-none focus:outline-none"
                 name="password"
                 type="password"
@@ -107,12 +83,32 @@ export default function Login() {
                 />
               </svg>
             </div>
-            <button className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-green rounded-full my-2 p-3">
-              <Link href="/">Login</Link>
+            <button onClick={() => signIn()} className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-green rounded-full my-2 p-3">
+              Login
             </button>
           </form>
         </div>
       </div>
     </div>
   );
+}
+
+export const getServerSideProps: GetServerSideProps= async (context) => {
+  const session = await getSession(context);
+
+  if(session){
+    return {
+       redirect:{
+        destination: '/',
+        permanent: false,
+       }
+    }
+  }
+
+  return{
+    props:{
+      session
+    }
+  }
+
 }
