@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 import { getSession, signIn } from 'next-auth/react';
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function Login() {
 
@@ -11,7 +13,15 @@ export default function Login() {
     handleSubmit,
   } = useForm();
 
-  const handleSignIn = (data: any) => console.log(data);
+  async function onSubmit(values: any){
+    const status = await signIn('credentials',{
+      redirect: false,
+      username: values.username,
+      password: values.password,
+      callbackUrl: "/"
+    })
+    console.log(status);
+  }
 
   return (
     <div className="flex justify-end">
@@ -31,7 +41,7 @@ export default function Login() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <form onSubmit={handleSubmit(handleSignIn)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex border-b border-ng-gray-400 py-1">
               <input
                 {...register("username", { required: true })}
@@ -99,16 +109,18 @@ export const getServerSideProps: GetServerSideProps= async (context) => {
   if(session){
     return {
        redirect:{
-        destination: '/',
+        destination: '/login',
         permanent: false,
        }
     }
   }
-
   return{
-    props:{
-      session
-    }
+    props: {
+      session: await unstable_getServerSession(
+        context.req,
+        context.res,
+        authOptions
+      ),
+    },
   }
-
 }

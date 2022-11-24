@@ -1,10 +1,15 @@
-import { Balance } from "../components/Balance";
 import { Menu } from "../components/Menu";
-
 import { useForm } from "react-hook-form";
+import { getSession, useSession } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]"
+
+import { Balance } from "../components/Balance";
+import { unstable_getServerSession } from "next-auth/next";
 
 export default function Operate() {
-  const { register, handleSubmit } = useForm();
+  const { data: session, status } = useSession()
+
+  const { register, handleSubmit} = useForm();
 
   const onSubmit = (data: any) => console.log(data);
 
@@ -73,4 +78,28 @@ export default function Operate() {
         </div>
     </>
   );
+}
+
+export async function getServerSideProps(context: any) {
+
+  const session = await getSession(context);
+
+  if(!session){
+    return {
+       redirect:{
+        destination: '/login',
+        permanent: false,
+       }
+    }
+  }
+
+  return {
+    props: {
+      session: await unstable_getServerSession(
+        context.req,
+        context.res,
+        authOptions
+      ),
+    },
+  }
 }

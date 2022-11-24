@@ -6,6 +6,10 @@ import Link from "next/link";
 export const Menu = () => {
   const { data: session } = useSession();
 
+  function handleSignOut(){
+    signOut();
+  }
+
   return (
     <div className="flex flex-col h-screen w-2/12 items-center p-5 justify-between bg-ng-gray-400">
       <Image src="/logo.png" width={58} height={58} alt="Logo"></Image>
@@ -81,7 +85,7 @@ export const Menu = () => {
           />
         </svg>
 
-        <Link href="/login" onClick={() => signOut()}>
+        <Link href="/login" onClick={handleSignOut}>
           Logout
         </Link>
       </div>

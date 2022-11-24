@@ -1,14 +1,11 @@
+import { unstable_getServerSession } from "next-auth/next";
+import { getSession, useSession } from "next-auth/react";
 import { Menu } from "../components/Menu";
-
-// export const getServerSideProps = async () => {
-//   const response = await fetch("https://jsonplaceholder.typicode.com/users");
-//   const data = await response.json();
-//   return {
-//     props: { transactions: data },
-//   };
-// };
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function History() {
+  const { data: session, status } = useSession()
+
   return (
       <div className="flex text-ng-white">
         <Menu></Menu>
@@ -17,4 +14,26 @@ export default function History() {
         </div>
       </div>
   );
+}
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if(!session){
+    return {
+       redirect:{
+        destination: '/login',
+        permanent: false,
+       }
+    }
+  }
+
+  return {
+    props: {
+      session: await unstable_getServerSession(
+        context.req,
+        context.res,
+        authOptions
+      ),
+    },
+  }
 }
