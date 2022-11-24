@@ -1,24 +1,23 @@
-import { Menu } from "../components/Menu";
 import { useForm } from "react-hook-form";
 import { getSession, useSession } from "next-auth/react";
-import { authOptions } from "./api/auth/[...nextauth]"
 
 import { Balance } from "../components/Balance";
-import { unstable_getServerSession } from "next-auth/next";
+import { Navbar } from "../components/Navbar/navbar";
 
 export default function Operate() {
-  const { data: session, status } = useSession()
-
-  const { register, handleSubmit} = useForm();
+  const { data: session, status } = useSession();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = (data: any) => console.log(data);
 
-  return (
-    <>
+  if (status === "authenticated") {
+    return (
+      <>
         <div className="flex text-ng-white">
-          <Menu></Menu>
+          <Navbar></Navbar>
           <div className="py-10 px-20 flex flex-col w-screen">
             <h1 className="font-blinker font-bold text-2xl mb-5">
+              {session.user?.email} 
               Here you can transfer you n-cash
             </h1>
             <div className="flex flex-col items-center">
@@ -76,30 +75,24 @@ export default function Operate() {
             </div>
           </div>
         </div>
-    </>
-  );
+      </>
+    );
+  }
 }
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
 
-  const session = await getSession(context);
-
-  if(!session){
+  if (!session) {
     return {
-       redirect:{
-        destination: '/login',
+      redirect: {
+        destination: "/login",
         permanent: false,
-       }
-    }
+      },
+    };
   }
 
   return {
-    props: {
-      session: await unstable_getServerSession(
-        context.req,
-        context.res,
-        authOptions
-      ),
-    },
-  }
+    props: session,
+  };
 }

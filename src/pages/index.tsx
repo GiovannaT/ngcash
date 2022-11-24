@@ -1,41 +1,41 @@
-import { Menu } from "../components/Menu";
 import { Balance } from "../components/Balance";
 import { getSession, useSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
+import { Navbar } from "../components/Navbar/navbar";
 
 export default function Home() {
-  const {data: session, status} = useSession()
-  console.log(session);
+  const { data: session, status } = useSession();
+  console.log("dados da sessão:", session);
 
-  if(session){
-      return (
+  if (status==="authenticated") {
+    console.log(status)
+    return (
       <div className="flex text-ng-white">
-      <Menu></Menu>
-      <div className="py-10 px-20 w-screen">
-        <h1 className="font-blinker font-bold text-2xl mb-5">{session.user?.email}</h1>
-        <Balance></Balance>
+        <Navbar></Navbar>
+        <div className="py-10 px-20 w-screen">
+          <h1 className="font-blinker font-bold text-2xl mb-5">
+            {session.user?.email}
+          </h1>
+          <Balance></Balance>
+        </div>
       </div>
-    </div>
-  );
+    );
   }
 }
 
-export const getServerSideProps: GetServerSideProps= async (context) => {
-  const session = await getSession(context);
+export async function getServerSideProps({req}) {
+  const session = await getSession({req})
 
   if(!session){
-    return {
-       redirect:{
+    return{
+      redirect:{
         destination: '/login',
         permanent: false,
-       }
+      }
     }
   }
 
-  return{
-    props:{
-      session
-    }
+  return {
+    props: session
   }
-
+  
 }

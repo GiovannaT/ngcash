@@ -5,22 +5,26 @@ import { GetServerSideProps } from "next";
 import { getSession, signIn } from 'next-auth/react';
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
-
   const {
     register,
     handleSubmit,
   } = useForm();
 
+  const router = useRouter();
+
   async function onSubmit(values: any){
-    const status = await signIn('credentials',{
+    const status = await signIn("NextAuthCredentials",{
       redirect: false,
       username: values.username,
       password: values.password,
       callbackUrl: "/"
     })
-    console.log(status);
+    console.log("NextAuthCredentials on login:", status);
+    if(status?.ok) router.push('/')
   }
 
   return (
@@ -93,7 +97,7 @@ export default function Login() {
                 />
               </svg>
             </div>
-            <button onClick={() => signIn()} className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-green rounded-full my-2 p-3">
+            <button onClick={() => signIn("credentials")} className="w-full font-bold font-blinker text-ng-gray-400 uppercase bg-ng-green rounded-full my-2 p-3">
               Login
             </button>
           </form>
@@ -103,24 +107,16 @@ export default function Login() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps= async (context) => {
-  const session = await getSession(context);
+// export const getServerSideProps: GetServerSideProps= async (context) => {
+//   const session = await getSession(context);
 
-  if(session){
-    return {
-       redirect:{
-        destination: '/login',
-        permanent: false,
-       }
-    }
-  }
-  return{
-    props: {
-      session: await unstable_getServerSession(
-        context.req,
-        context.res,
-        authOptions
-      ),
-    },
-  }
-}
+//   return{
+//     props: {
+//       session: await unstable_getServerSession(
+//         context.req,
+//         context.res,
+//         authOptions
+//       ),
+//     },
+//   }
+// }

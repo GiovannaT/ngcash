@@ -1,14 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { useForm } from 'react-hook-form'
 
 export default function CreateAccount() {
   const { register, handleSubmit, formState:{errors}} = useForm({mode:'onTouched'})
 
+  const router = useRouter();
   const onSubmit = (data: any) => {
     try {
       createUser(data);
+      router.push('/login');
     } catch (error) {
       console.log(error)
     }

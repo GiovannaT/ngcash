@@ -1,16 +1,21 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 const prisma = new PrismaClient();
 
 export const authOptions = {
+  session:{
+    strategy: 'jwt',
+  },
   providers: [
     Credentials({
-      name: "NextAuthCredentials",
+      id: 'credentials',
+      name: 'NextAuthCredentials',
       credentials: {
-        username: { label: "username", type: "text" },
-        password: { label: "password", type: "password" },
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
         //this is the callback function
@@ -21,18 +26,25 @@ export const authOptions = {
             username: credentials.username,
           },
         });
+        //check user existance
+        if(!dbUser){
+          throw new Error("NO user found. Please Sign Up")
+        }
+        //compare passwords
         if (dbUser) {
-          console.log(dbUser);
+          console.log("dbUser: ",dbUser);
           if (dbUser.password == credentials.password) {
             return dbUser;
           }
-        }
-        return null;
+        }        
+        return dbUser;
       },
     }),
   ],
   secret: "teste",
+  adapter: PrismaAdapter(prisma),
   jwt: {
+    maxAge: 60 * 60 * 24,
     secret: "testejwt",
     encryption: true,
   },

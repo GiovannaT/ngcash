@@ -1,39 +1,36 @@
-import { unstable_getServerSession } from "next-auth/next";
 import { getSession, useSession } from "next-auth/react";
-import { Menu } from "../components/Menu";
-import { authOptions } from "./api/auth/[...nextauth]";
+import { Navbar } from "../components/Navbar/navbar";
 
 export default function History() {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
+  console.log("dados da sessão:", session);
 
-  return (
+  if (status === "authenticated") {
+    return (
       <div className="flex text-ng-white">
-        <Menu></Menu>
+        <Navbar></Navbar>
         <div className="flex">
-          
+          {session.user?.email}
         </div>
       </div>
-  );
+    );
+  }
 }
-export async function getServerSideProps(context: any) {
-  const session = await getSession(context);
+
+export async function getServerSideProps({req}) {
+  const session = await getSession({req})
 
   if(!session){
-    return {
-       redirect:{
+    return{
+      redirect:{
         destination: '/login',
         permanent: false,
-       }
+      }
     }
   }
 
   return {
-    props: {
-      session: await unstable_getServerSession(
-        context.req,
-        context.res,
-        authOptions
-      ),
-    },
+    props: session
   }
+  
 }
