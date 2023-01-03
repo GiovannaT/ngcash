@@ -1,4 +1,5 @@
 import { getSession, useSession } from "next-auth/react";
+
 import { Navbar } from "../components/Navbar/navbar";
 
 export default function History() {

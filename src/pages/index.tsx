@@ -1,10 +1,15 @@
-import { Balance } from "../components/Balance";
+import { PrismaClient } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getSession, useSession } from "next-auth/react";
+
+import { Balance } from "../components/Balance";
 import { Navbar } from "../components/Navbar/navbar";
 
-export default function Home() {
+export default async function Home() {
   const { data: session, status } = useSession();
   console.log("dados da sessão:", session);
+
+  const userSession = getSession();
 
   if (status==="authenticated") {
     console.log(status)
@@ -22,10 +27,10 @@ export default function Home() {
   }
 }
 
-export async function getServerSideProps({req}) {
-  const session = await getSession({req})
+export async function getServerSideProps(req: NextApiRequest, res: NextApiResponse,){
+  const sessionUser = await getSession({req})
 
-  if(!session){
+  if(!sessionUser){
     return{
       redirect:{
         destination: '/login',
@@ -35,7 +40,20 @@ export async function getServerSideProps({req}) {
   }
 
   return {
-    props: session
+    props: sessionUser,
   }
   
 }
+
+// export async function handleUser(req: NextApiRequest, res: NextApiResponse){
+  
+//   const prisma = new PrismaClient();
+
+//   const user = await prisma.users.findUnique({
+//     where: {
+//       email
+//     }
+//   });
+//   console.log(user);
+
+// }

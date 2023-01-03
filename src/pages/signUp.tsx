@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { useForm } from 'react-hook-form'
 
-export default function CreateAccount() {
+export default function SignUp() {
   const { register, handleSubmit, formState:{errors}} = useForm({mode:'onTouched'})
 
   const router = useRouter();

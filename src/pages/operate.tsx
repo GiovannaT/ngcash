@@ -8,6 +8,10 @@ export default function Operate() {
   const { data: session, status } = useSession();
   const { register, handleSubmit } = useForm();
 
+  const findUser = () => {
+    console.log("procurando usuario")
+  }
+
   const onSubmit = (data: any) => console.log(data);
 
   if (status === "authenticated") {
@@ -33,6 +37,7 @@ export default function Operate() {
                     </label>
                     <input
                       {...register("username", { required: true })}
+                      onBlur={findUser}
                       className="bg-ng-gray-400 border-b border-ng-white my-5 w-64"
                       type="text"
                       name="username"
